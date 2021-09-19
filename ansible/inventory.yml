@@ -1,0 +1,5 @@
+all:
+  children:
+    k3s_nodes:
+      hosts:
+        k3s1.ninjhah.co.za:

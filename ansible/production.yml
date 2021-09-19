@@ -1,0 +1,28 @@
+- name: Install k3s
+  hosts: k3s_nodes
+  roles:
+     - role: xanmanning.k3s
+- name: Fetch kubeconfig
+  hosts: k3s_nodes
+  tasks:
+  - ansible.builtin.slurp:
+      src: /etc/rancher/k3s/k3s.yaml
+    register: kubeconfig
+- name: Save kubeconfig locally
+  hosts: localhost
+  tasks:
+  - ansible.builtin.file:
+      dest: ~/.kube/config
+    become: true
+    become_user: sas
+  - ansible.builtin.copy:
+      dest: ~/.kube/config
+      content: "{{ hostvars['k3s1.ninjhah.co.za'].kubeconfig.content | b64decode }}"
+    become: true
+    become_user: sas
+  - ansible.builtin.replace:
+      path: ~/.kube/config
+      regexp: '127\.0\.0\.1'
+      replace: 'k3s1.ninjhah.co.za'
+    become: true
+    become_user: sas
