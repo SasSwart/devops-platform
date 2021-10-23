@@ -21,7 +21,7 @@ resource "digitalocean_droplet" "k3s" {
   name = "k3s"
   image  = "ubuntu-21-04-x64"
   region = "lon1"
-  size   = "s-1vcpu-1gb"
+  size   = "s-2vcpu-2gb"
   ssh_keys = [data.digitalocean_ssh_key.saspc.id]
 }
 

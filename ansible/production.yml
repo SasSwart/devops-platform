@@ -12,16 +12,16 @@
   hosts: localhost
   tasks:
   - ansible.builtin.file:
-      dest: ~/.kube/config
+      dest: ~/.kube/config-do
     become: true
     become_user: sas
   - ansible.builtin.copy:
-      dest: ~/.kube/config
+      dest: ~/.kube/config-do
       content: "{{ hostvars['k3s1.ninjhah.co.za'].kubeconfig.content | b64decode }}"
     become: true
     become_user: sas
   - ansible.builtin.replace:
-      path: ~/.kube/config
+      path: ~/.kube/config-do
       regexp: '127\.0\.0\.1'
       replace: 'k3s1.ninjhah.co.za'
     become: true
