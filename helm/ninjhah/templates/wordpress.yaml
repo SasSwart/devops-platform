@@ -1,0 +1,57 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ninjhah-blog
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-ninjhah
+  namespace: ninjhah-blog
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "le-dns01"
+spec:
+  tls:
+    - hosts:
+        - ninjhah.co.za
+      secretName: ingress-ninjhah-tls
+  rules:
+  - host: ninjhah.co.za
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ninjhah-service
+            port:
+              number: 443
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ninjhah-service
+  namespace: ninjhah-blog
+spec:
+  selector:
+    app: ninjhah
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 80
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ninjhah-pod
+  namespace: ninjhah-blog
+  labels:
+    app: ninjhah
+spec:
+  containers:
+  - name: ninjhah-wordpress
+    image: wordpress
+    ports:
+    - containerPort: 80

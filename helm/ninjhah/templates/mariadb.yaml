@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ninjhah-mariadb-pod
+  namespace: ninjhah-blog
+  labels:
+    app: ninjhah
+spec:
+  containers:
+  - name: ninjhah-mariadb
+    image: mariadb
+    ports:
+    - containerPort: 3306

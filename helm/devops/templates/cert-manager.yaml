@@ -5,7 +5,7 @@ metadata:
   name: central-tls
 ---
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: le-dns01
   namespace: central-tls
@@ -22,15 +22,3 @@ spec:
           apiTokenSecretRef:
             name: cloudflare-api-token-secret
             key: api-token
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: ninjhah-cert
-  namespace: central-tls
-spec:
-  dnsNames:
-    - ninjhah.co.za
-  secretName: ninjhah-cert-secret
-  issuerRef:
-    name: le-dns01
