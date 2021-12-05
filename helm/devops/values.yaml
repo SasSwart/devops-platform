@@ -42,7 +42,7 @@ service:
 
 ingress:
   enabled: false
-  className: ""
+  class: "nginx"
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -106,3 +106,15 @@ ingress-nginx:
 
 cert-manager:
   installCRDs: true
+
+loki-stack:
+  grafana:
+   enabled: true
+  prometheus:
+    enabled: true
+    alertmanager:
+      persistentVolume:
+        enabled: false
+    server:
+      persistentVolume:
+        enabled: false

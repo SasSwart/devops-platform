@@ -1,0 +1,105 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: registry
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-registry
+  namespace: registry
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
+    cert-manager.io/cluster-issuer: "le-dns01"
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: registry-auth
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - ninjhah'
+spec:
+  tls:
+    - hosts:
+        - registry.ninjhah.co.za
+      secretName: ingress-registry-tls
+  rules:
+  - host: registry.ninjhah.co.za
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: registry-service
+            port:
+              number: 443
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registry-service
+  namespace: registry
+spec:
+  selector:
+    app: registry
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry-deployment
+  namespace: registry
+  labels:
+    app: registry
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: registry
+  template:
+    metadata:
+      namespace: registry
+      labels:
+        app: registry
+    spec:
+      containers:
+        - name: registry
+          image: registry:latest
+          ports:
+          - containerPort: 5000
+          env:
+          volumeMounts:
+          - name: registry
+            mountPath: "/var/lib/registry"
+      volumes:
+      - name: registry
+        persistentVolumeClaim:
+          claimName: registry  
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: registry
+  namespace: registry
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 127.0.0.1
+    path: "/mnt/volume_lon1_01/registry"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: registry
+  namespace: registry
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1Gi

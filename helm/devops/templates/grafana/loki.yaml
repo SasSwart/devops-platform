@@ -1,0 +1,40 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    # TODO: Auth
+  name: loki
+spec:
+  rules:
+  - host: loki.ninjhah.co.za
+    http:
+      paths:
+      - backend:
+          serviceName: central-tls-loki
+          servicePort: 3100
+  tls:
+  - secretName: ingress-loki
+    hosts:
+    - loki.ninjhah.co.za
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    # TODO: Auth
+  name: grafana
+spec:
+  rules:
+  - host: grafana.ninjhah.co.za
+    http:
+      paths:
+      - backend:
+          serviceName: central-tls-grafana
+          servicePort: 80
+  tls:
+  - secretName: ingress-grafana
+    hosts:
+    - grafana.ninjhah.co.za

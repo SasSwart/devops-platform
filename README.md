@@ -20,3 +20,9 @@ I1023 19:57:56.562111  185925 round_trippers.go:454] POST https://k3s1.ninjhah.c
 certificate.cert-manager.io/ninjhah-cert created
 I1023 19:57:56.562320  185925 apply.go:392] Running apply post-processor function
 ```
+
+# NFS Install instructions:
+https://cloud.netapp.com/blog/azure-anf-blg-linux-nfs-server-how-to-set-up-server-and-client#H_H1
+
+# Install plugins without FTP
+https://www.smarterasp.net/support/kb/a1989/how-to-update-wordpress-automatically-without-using-ftp.aspx

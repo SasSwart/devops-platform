@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.namespace }}-deployment
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.namespace }}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: {{ .Values.namespace }}
+  template:
+    metadata:
+      namespace: {{ .Values.namespace }}
+      labels:
+        app: {{ .Values.namespace }}
+    spec:
+      containers:
+        - name: {{ .Values.namespace }}-wordpress
+          image: bitnami/wordpress:latest
+          ports:
+          - containerPort: 8080
+          env:
+          - name: WORDPRESS_DATABASE_PASSWORD
+            value: {{ .Values.wordpressDatabasePassword}}
+          - name: WORDPRESS_DATABASE_USER
+            value: {{ .Values.wordpressDatabaseUser}}
+          - name: WORDPRESS_DATABASE_NAME
+            value: {{ .Values.wordpressDatabaseName}}
+          - name: WORDPRESS_DATABASE_HOST
+            value: {{ .Values.wordpressDatabaseHost}}
+          volumeMounts:
+          - name: {{ .Values.namespace }}-volume
+            mountPath: "/bitnami/wordpress"
+      volumes:
+      - name: {{ .Values.namespace }}-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.namespace }}-volume  
